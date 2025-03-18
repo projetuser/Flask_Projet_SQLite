@@ -1,10 +1,5 @@
--- Suppression des tables existantes si elles existent
-DROP TABLE IF EXISTS utilisateurs;
-DROP TABLE IF EXISTS livres;
-DROP TABLE IF EXISTS emprunts;
-
 -- Création de la table des utilisateurs
-CREATE TABLE utilisateurs (
+CREATE TABLE IF NOT EXISTS utilisateurs (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     username TEXT NOT NULL UNIQUE,
     password TEXT NOT NULL,
@@ -12,7 +7,7 @@ CREATE TABLE utilisateurs (
 );
 
 -- Création de la table des livres
-CREATE TABLE livres (
+CREATE TABLE IF NOT EXISTS livres (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     titre TEXT NOT NULL,
     auteur TEXT NOT NULL,
@@ -20,7 +15,7 @@ CREATE TABLE livres (
 );
 
 -- Création de la table des emprunts
-CREATE TABLE emprunts (
+CREATE TABLE IF NOT EXISTS emprunts (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id INTEGER NOT NULL,
     livre_id INTEGER NOT NULL,
