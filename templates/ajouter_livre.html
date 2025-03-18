@@ -6,17 +6,17 @@
     <title>Ajouter un livre</title>
 </head>
 <body>
-    <h2>Ajouter un livre</h2>
+    <h1>Ajouter un nouveau livre</h1>
     <form method="POST">
-        <label for="titre">Titre :</label>
+        <label for="titre">Titre:</label>
         <input type="text" name="titre" required><br><br>
 
-        <label for="auteur">Auteur :</label>
+        <label for="auteur">Auteur:</label>
         <input type="text" name="auteur" required><br><br>
 
         <button type="submit">Ajouter</button>
     </form>
-    <br>
+
     <a href="{{ url_for('livres') }}">Retour à la liste des livres</a>
 </body>
 </html>
