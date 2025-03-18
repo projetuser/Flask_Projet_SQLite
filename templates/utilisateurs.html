@@ -2,34 +2,25 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestion des utilisateurs</title>
+    <title>Utilisateurs</title>
 </head>
 <body>
-    <h2>Liste des utilisateurs</h2>
+    <h1>Liste des utilisateurs</h1>
     <table>
         <thead>
             <tr>
-                <th>Nom d'utilisateur</th>
+                <th>Username</th>
                 <th>Rôle</th>
-                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
-            {% for utilisateur in utilisateurs %}
-                <tr>
-                    <td>{{ utilisateur['username'] }}</td>
-                    <td>{{ utilisateur['role'] }}</td>
-                    <td>
-                        {% if utilisateur['role'] != 'admin' %}
-                            <a href="{{ url_for('supprimer_utilisateur', id=utilisateur['id']) }}">Supprimer</a>
-                        {% endif %}
-                    </td>
-                </tr>
+            {% for user in utilisateurs %}
+            <tr>
+                <td>{{ user.username }}</td>
+                <td>{{ user.role }}</td>
+            </tr>
             {% endfor %}
         </tbody>
     </table>
-    <br>
-    <a href="{{ url_for('dashboard') }}">Retour au tableau de bord</a>
 </body>
 </html>
