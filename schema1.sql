@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS utilisateurs (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     username TEXT NOT NULL UNIQUE,
     password TEXT NOT NULL,
-    role TEXT CHECK(role IN ('admin', 'user')) NOT NULL
+    role TEXT NOT NULL
 );
 
 -- Création de la table des livres
