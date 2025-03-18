@@ -1,20 +1,36 @@
-{% extends "layout.html" %}
-{% block content %}
-<div class="container bottomForm">
-    <h2 class="text-center">Fiche Client</h2>
-    <div class="row">
-        <div class="col-sm-3"></div>
-        <form method="POST" class="text-left col-sm-6">
-            {{ form.hidden_tag() }}
-            <div class="form-group">
-                {{ form.nom.label }} {{ form.nom(class="form-control") }}
-            </div>
-            <div class="form-group">
-                {{ form.prenom.label }} {{ form.prenom(class="form-control") }}
-            </div>
-            {{ form.submit(class="btn btn-primary") }}
-        </form>
-        <div class="col-sm-3"></div>
-    </div>
-</div>
-{% endblock content %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Ajouter un Livre</title>
+</head>
+<body>
+    <h2>Ajouter un Livre</h2>
+    <form action="{{ url_for('ajouter_livre') }}" method="post">
+        <label for="titre">Titre:</label>
+        <input type="text" id="titre" name="titre" required>
+        <label for="auteur">Auteur:</label>
+        <input type="text" id="auteur" name="auteur" required>
+        <button type="submit">Ajouter</button>
+    </form>
+    <a href="{{ url_for('dashboard') }}">Retour</a>
+</body>
+</html>
+
+<!-- utilisateurs.html -->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestion des Utilisateurs</title>
+</head>
+<body>
+    <h2>Liste des utilisateurs</h2>
+    <ul>
+        {% for utilisateur in utilisateurs %}
+            <li>{{ utilisateur.username }} - {{ utilisateur.role }}</li>
+        {% endfor %}
+    </ul>
+    <a href="{{ url_for('dashboard') }}">Retour</a>
+</body>
+</html>
