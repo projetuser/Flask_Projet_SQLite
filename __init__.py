@@ -39,8 +39,9 @@ def dashboard():
 def livres():
     conn = get_db_connection()
     livres = conn.execute('SELECT * FROM livres').fetchall()
+    emprunts = conn.execute('SELECT * FROM emprunts WHERE user_id = ?', (session.get('user_id', None),)).fetchall()  # Récupérer les livres empruntés par l'utilisateur
     conn.close()
-    return render_template('read_data.html', livres=livres)
+    return render_template('read_data_user.html', livres=livres, emprunts=emprunts)  # Passer les livres et les emprunts à la vue
 
 @app.route('/ajouter_livre', methods=['GET', 'POST'])
 def ajouter_livre():
