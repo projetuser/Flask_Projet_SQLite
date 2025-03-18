@@ -37,11 +37,16 @@ def dashboard():
 
 @app.route('/livres')
 def livres():
+    if 'user_id' not in session:
+        return redirect(url_for('authentification'))  # Vérifier si l'utilisateur est authentifié
+    
     conn = get_db_connection()
+    # Récupérer tous les livres
     livres = conn.execute('SELECT * FROM livres').fetchall()
-    emprunts = conn.execute('SELECT * FROM emprunts WHERE user_id = ?', (session.get('user_id', None),)).fetchall()
     conn.close()
-    return render_template('read_data_user.html', livres=livres, emprunts=emprunts)
+    
+    # Passer les livres au template
+    return render_template('read_data_user.html', livres=livres)
 
 @app.route('/ajouter_livre', methods=['GET', 'POST'])
 def ajouter_livre():
