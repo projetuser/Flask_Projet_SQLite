@@ -2,60 +2,35 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Liste des livres</title>
 </head>
 <body>
-    <h1>Liste des livres</h1>
+    <h1>Liste des livres disponibles</h1>
     <table>
-        <thead>
-            <tr>
-                <th>Titre</th>
-                <th>Auteur</th>
-                <th>Disponibilité</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for livre in livres %}
+        <tr>
+            <th>Titre</th>
+            <th>Auteur</th>
+            <th>Disponibilité</th>
+            <th>Action</th>
+        </tr>
+        {% for livre in livres %}
             <tr>
                 <td>{{ livre.titre }}</td>
                 <td>{{ livre.auteur }}</td>
+                <td>{{ livre.disponible }}</td>
                 <td>
                     {% if livre.disponible > 0 %}
-                        Disponible
-                    {% else %}
-                        Indisponible
+                        <a href="{{ url_for('emprunter_livre', id=livre.id) }}">Emprunter</a>
                     {% endif %}
-                </td>
-                <td>
-                    {% if 'user_id' in session %}
-                        {% if livre.disponible > 0 %}
-                            <a href="{{ url_for('emprunter_livre', id=livre.id) }}">Emprunter</a>
-                        {% else %}
-                            Indisponible
+                    {% for emprunt in emprunts %}
+                        {% if emprunt.livre_id == livre.id %}
+                            <a href="{{ url_for('retourner_livre', id=livre.id) }}">Retourner</a>
                         {% endif %}
-                        
-                        {% set emprunt = false %}
-                        {% for emprunted_livre in emprunts %}
-                            {% if emprunted_livre.livre_id == livre.id %}
-                                {% set emprunt = true %}
-                            {% endif %}
-                        {% endfor %}
-                        
-                        {% if emprunt %}
-                            <a href="{{ url_for('retourner_livre', id=livre.id) }}">Désemprunter</a>
-                        {% endif %}
-                    {% else %}
-                        <p>Veuillez vous connecter pour emprunter ou désemprunter un livre.</p>
-                    {% endif %}
-                    {% if 'role' in session and session['role'] == 'admin' %}
-                        <!-- Le bouton désemprunter est visible uniquement pour l'admin -->
-                        <a href="{{ url_for('retourner_livre', id=livre.id) }}">Désemprunter</a>
-                    {% endif %}
+                    {% endfor %}
                 </td>
             </tr>
-            {% endfor %}
-        </tbody>
+        {% endfor %}
     </table>
 </body>
 </html>
