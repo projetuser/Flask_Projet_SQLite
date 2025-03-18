@@ -3,34 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Liste des livres</title>
+    <title>Liste des Livres</title>
 </head>
 <body>
-    <h1>Liste des livres disponibles</h1>
+    <h1>Liste des livres</h1>
+
     <table>
-        <tr>
-            <th>Titre</th>
-            <th>Auteur</th>
-            <th>Disponibilité</th>
-            <th>Action</th>
-        </tr>
-        {% for livre in livres %}
+        <thead>
             <tr>
-                <td>{{ livre.titre }}</td>
-                <td>{{ livre.auteur }}</td>
-                <td>{{ livre.disponible }}</td>
+                <th>Titre</th>
+                <th>Auteur</th>
+                <th>Disponibilité</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for livre in livres %}
+            <tr>
+                <td>{{ livre['titre'] }}</td>
+                <td>{{ livre['auteur'] }}</td>
+                <td>{{ livre['disponible'] }}</td>
                 <td>
-                    {% if livre.disponible > 0 %}
-                        <a href="{{ url_for('emprunter_livre', id=livre.id) }}">Emprunter</a>
+                    {% if livre['disponible'] > 0 %}
+                        <a href="{{ url_for('emprunter_livre', id=livre['id']) }}">Emprunter</a>
+                    {% else %}
+                        <span>Indisponible</span>
                     {% endif %}
-                    {% for emprunt in emprunts %}
-                        {% if emprunt.livre_id == livre.id %}
-                            <a href="{{ url_for('retourner_livre', id=livre.id) }}">Retourner</a>
-                        {% endif %}
-                    {% endfor %}
                 </td>
             </tr>
-        {% endfor %}
+            {% endfor %}
+        </tbody>
     </table>
+
 </body>
 </html>
