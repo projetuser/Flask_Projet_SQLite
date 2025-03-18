@@ -4,7 +4,7 @@ import sqlite3
 connection = sqlite3.connect('bibliotheque.py')  # Utilise un fichier Python pour la base de données
 
 # Exécution du script de création de la base de données (si ce n'est pas déjà fait)
-with open('schema.sql') as f:
+with open('schema1.sql') as f:
     connection.executescript(f.read())
 
 # Création d'un curseur pour exécuter les requêtes
