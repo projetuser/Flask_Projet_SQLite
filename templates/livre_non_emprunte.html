@@ -6,7 +6,15 @@
     <title>Erreur</title>
 </head>
 <body>
-    <h1>Vous n'avez pas emprunté ce livre.</h1>
+    <h1>
+        {% if role == 'admin' %}
+            Ce livre n'a pas été emprunté par un utilisateur. Impossible de le désemprunter.
+        {% elif role == 'user' %}
+            Vous n'avez pas emprunté ce livre et il ne peut donc pas être retourné.
+        {% else %}
+            Erreur inconnue.
+        {% endif %}
+    </h1>
     <a href="{{ url_for('livres') }}">Retour à la liste des livres</a>
 </body>
 </html>
