@@ -5,7 +5,7 @@ app = Flask(__name__)
 app.secret_key = 'votre_cle_secrete'
 
 def get_db_connection():
-    conn = sqlite3.connect('bibliotheque.py')
+    conn = sqlite3.connect('bibliotheque.db')
     conn.row_factory = sqlite3.Row
     return conn
 
@@ -44,18 +44,22 @@ def livres():
 
 @app.route('/ajouter_livre', methods=['GET', 'POST'])
 def ajouter_livre():
+    if 'role' not in session or session['role'] != 'admin':  # Vérification des rôles
+        return redirect(url_for('dashboard'))
     if request.method == 'POST':
         titre = request.form['titre']
         auteur = request.form['auteur']
         conn = get_db_connection()
-        conn.execute('INSERT INTO livres (titre, auteur) VALUES (?, ?)', (titre, auteur))
+        conn.execute('INSERT INTO livres (titre, auteur, nombre_exemplaires) VALUES (?, ?, ?)', (titre, auteur, 1))  # Ajout du nombre d'exemplaires
         conn.commit()
         conn.close()
         return redirect(url_for('livres'))
-    return render_template('ajouter_client.html')
+    return render_template('ajouter_livre.html')
 
 @app.route('/supprimer_livre/<int:id>')
 def supprimer_livre(id):
+    if 'role' not in session or session['role'] != 'admin':  # Vérification des rôles
+        return redirect(url_for('dashboard'))
     conn = get_db_connection()
     conn.execute('DELETE FROM livres WHERE id = ?', (id,))
     conn.commit()
@@ -66,12 +70,19 @@ def supprimer_livre(id):
 def emprunter_livre(id):
     if 'user_id' not in session:
         return redirect(url_for('authentification'))
+    
     conn = get_db_connection()
-    conn.execute('INSERT INTO emprunts (user_id, livre_id) VALUES (?, ?)', (session['user_id'], id))
-    conn.execute('UPDATE livres SET disponible = 0 WHERE id = ?', (id,))
-    conn.commit()
-    conn.close()
-    return redirect(url_for('livres'))
+    livre = conn.execute('SELECT * FROM livres WHERE id = ?', (id,)).fetchone()
+    
+    if livre and livre['disponible'] > 0:  # Vérifier si un exemplaire est disponible
+        conn.execute('INSERT INTO emprunts (user_id, livre_id) VALUES (?, ?)', (session['user_id'], id))
+        conn.execute('UPDATE livres SET disponible = disponible - 1 WHERE id = ?', (id,))
+        conn.commit()
+        conn.close()
+        return redirect(url_for('livres'))
+    else:
+        conn.close()
+        return render_template('livre_non_disponible.html')  # Afficher une page d'erreur si le livre est indisponible
 
 @app.route('/retourner_livre/<int:id>')
 def retourner_livre(id):
@@ -79,7 +90,7 @@ def retourner_livre(id):
         return redirect(url_for('authentification'))
     conn = get_db_connection()
     conn.execute('DELETE FROM emprunts WHERE user_id = ? AND livre_id = ?', (session['user_id'], id))
-    conn.execute('UPDATE livres SET disponible = 1 WHERE id = ?', (id,))
+    conn.execute('UPDATE livres SET disponible = disponible + 1 WHERE id = ?', (id,))
     conn.commit()
     conn.close()
     return redirect(url_for('livres'))
