@@ -5,8 +5,8 @@
     <title>Erreur</title>
 </head>
 <body>
-    <h1>Erreur : Ce livre n'est pas emprunté !</h1>
-    <p>Ce livre n'a pas d'emprunt en cours. Il n'est donc pas possible de le désenprunter.</p>
-    <a href="{{ url_for('livres') }}">Retour à la liste des livres</a>
+    <h1>Erreur</h1>
+    <p>Vous ne pouvez pas désemprunter ce livre car vous ne l'avez pas emprunté.</p>
+    <a href="{{ url_for('livres') }}">Retourner à la liste des livres</a>
 </body>
 </html>
