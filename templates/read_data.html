@@ -48,6 +48,10 @@
                     {% else %}
                         <p>Veuillez vous connecter pour emprunter ou désemprunter un livre.</p>
                     {% endif %}
+                    {% if 'role' in session and session['role'] == 'admin' %}
+                        <!-- Le bouton désemprunter est visible uniquement pour l'admin -->
+                        <a href="{{ url_for('retourner_livre', id=livre.id) }}">Désemprunter</a>
+                    {% endif %}
                 </td>
             </tr>
             {% endfor %}
