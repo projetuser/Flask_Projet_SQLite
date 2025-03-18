@@ -28,8 +28,25 @@
                     {% endif %}
                 </td>
                 <td>
-                    {% if role == 'admin' %}
-                        <a href="{{ url_for('desenprunter_livre', id=livre.id) }}">Désenprunter</a>
+                    {% if 'user_id' in session %}
+                        {% if livre.disponible > 0 %}
+                            <a href="{{ url_for('emprunter_livre', id=livre.id) }}">Emprunter</a>
+                        {% else %}
+                            Indisponible
+                        {% endif %}
+                        
+                        {% set emprunt = false %}
+                        {% for emprunted_livre in emprunts %}
+                            {% if emprunted_livre.livre_id == livre.id %}
+                                {% set emprunt = true %}
+                            {% endif %}
+                        {% endfor %}
+                        
+                        {% if emprunt %}
+                            <a href="{{ url_for('retourner_livre', id=livre.id) }}">Désemprunter</a>
+                        {% endif %}
+                    {% else %}
+                        <p>Veuillez vous connecter pour emprunter ou désemprunter un livre.</p>
                     {% endif %}
                 </td>
             </tr>
