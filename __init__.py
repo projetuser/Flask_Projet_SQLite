@@ -5,7 +5,7 @@ app = Flask(__name__)
 app.secret_key = 'votre_cle_secrete'
 
 def get_db_connection():
-    conn = sqlite3.connect('bibliotheque.db')
+    conn = sqlite3.connect('bibliotheque.py')
     conn.row_factory = sqlite3.Row
     return conn
 
