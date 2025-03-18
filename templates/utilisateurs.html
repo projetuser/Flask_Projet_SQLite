@@ -2,25 +2,27 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Utilisateurs</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des utilisateurs</title>
 </head>
 <body>
     <h1>Liste des utilisateurs</h1>
     <table>
-        <thead>
+        <tr>
+            <th>Nom d'utilisateur</th>
+            <th>Rôle</th>
+            <th>Actions</th>
+        </tr>
+        {% for utilisateur in utilisateurs %}
             <tr>
-                <th>Username</th>
-                <th>Rôle</th>
+                <td>{{ utilisateur.username }}</td>
+                <td>{{ utilisateur.role }}</td>
+                <td>
+                    <a href="{{ url_for('supprimer_utilisateur', id=utilisateur.id) }}">Supprimer</a>
+                </td>
             </tr>
-        </thead>
-        <tbody>
-            {% for user in utilisateurs %}
-            <tr>
-                <td>{{ user.username }}</td>
-                <td>{{ user.role }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
+        {% endfor %}
     </table>
+    <a href="{{ url_for('dashboard') }}">Retour au tableau de bord</a>
 </body>
 </html>
