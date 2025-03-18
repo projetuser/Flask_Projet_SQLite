@@ -12,20 +12,33 @@ def get_db_connection():
 
 # Route pour l'authentification des utilisateurs
 @app.route('/authentification', methods=['GET', 'POST'])
+@app.route('/authentification', methods=['GET', 'POST'])
 def authentification():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
+
+        # Connexion à la base de données
         conn = get_db_connection()
         user = conn.execute('SELECT * FROM utilisateurs WHERE username = ? AND password = ?', (username, password)).fetchone()
         conn.close()
+
+        # Déboguer l'utilisateur récupéré
+        print(f"Utilisateur récupéré: {user}")
+
+        # Si l'utilisateur existe
         if user:
+            # Création de la session
             session['user_id'] = user['id']
             session['role'] = user['role']
             return redirect(url_for('dashboard'))
         else:
+            # Si les identifiants sont incorrects, afficher un message d'erreur
+            print("Identifiants incorrects")
             return render_template('formulaire_authentification.html', error=True)
+
     return render_template('formulaire_authentification.html')
+
 
 # Route pour le tableau de bord
 @app.route('/dashboard')
