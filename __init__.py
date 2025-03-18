@@ -91,23 +91,30 @@ def retourner_livre(id):
     
     conn = get_db_connection()
     livre = conn.execute('SELECT * FROM livres WHERE id = ?', (id,)).fetchone()  # Récupérer les informations du livre
-    emprunt = conn.execute('SELECT * FROM emprunts WHERE user_id = ? AND livre_id = ?', (session['user_id'], id)).fetchone()  # Vérifier si l'utilisateur a emprunté ce livre
     
+    # Si l'utilisateur est admin, il peut désemprunter n'importe quel livre
+    if 'role' in session and session['role'] == 'admin':
+        # Retirer l'emprunt de la table emprunts pour ce livre
+        conn.execute('DELETE FROM emprunts WHERE livre_id = ?', (id,))
+        # Augmenter la disponibilité du livre
+        conn.execute('UPDATE livres SET disponible = disponible + 1 WHERE id = ?', (id,))
+        conn.commit()
+        conn.close()
+        return redirect(url_for('livres'))  # Rediriger vers la liste des livres après avoir désemprunté le livre
+    
+    # Si l'utilisateur est un simple utilisateur, vérifier qu'il a emprunté ce livre
+    emprunt = conn.execute('SELECT * FROM emprunts WHERE user_id = ? AND livre_id = ?', (session['user_id'], id)).fetchone()
     if emprunt:  # Si l'utilisateur a emprunté le livre
         # Retirer l'emprunt de la table emprunts
         conn.execute('DELETE FROM emprunts WHERE user_id = ? AND livre_id = ?', (session['user_id'], id))
-        
         # Augmenter la disponibilité du livre
         conn.execute('UPDATE livres SET disponible = disponible + 1 WHERE id = ?', (id,))
-        
         conn.commit()
         conn.close()
-        
         return redirect(url_for('livres'))  # Rediriger vers la liste des livres après avoir désemprunté le livre
     else:
         conn.close()
         return render_template('livre_non_emprunte.html')  # Afficher une page d'erreur si l'utilisateur n'a pas emprunté ce livre
-
 
 @app.route('/desenprunter_livre/<int:id>', methods=['GET', 'POST'])
 def desenprunter_livre(id):
