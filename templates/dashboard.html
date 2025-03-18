@@ -2,18 +2,14 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tableau de bord</title>
 </head>
 <body>
-    <h2>Bienvenue, {{ role }} !</h2>
-    <ul>
-        <li><a href="{{ url_for('livres') }}">Voir les livres</a></li>
-        {% if role == 'admin' %}
-            <li><a href="{{ url_for('utilisateurs') }}">Gérer les utilisateurs</a></li>
-            <li><a href="{{ url_for('ajouter_livre') }}">Ajouter un livre</a></li>
-        {% endif %}
-    </ul>
-    <a href="{{ url_for('deconnexion') }}">Se déconnecter</a>
+    <h1>Bienvenue sur le tableau de bord</h1>
+    {% if role == 'admin' %}
+        <p><a href="{{ url_for('livres') }}">Voir les livres</a></p>
+        <p><a href="{{ url_for('utilisateurs') }}">Gérer les utilisateurs</a></p>
+    {% endif %}
+    <p><a href="{{ url_for('deconnexion') }}">Déconnexion</a></p>
 </body>
 </html>
