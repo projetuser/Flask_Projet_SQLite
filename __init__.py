@@ -6,7 +6,7 @@ app.secret_key = 'votre_cle_secrete'  # Pour gérer les sessions de manière sé
 
 # Connexion à la base de données SQLite
 def get_db_connection():
-    conn = sqlite3.connect('bibliotheque.py')
+    conn = sqlite3.connect('bibliotheque.db')
     conn.row_factory = sqlite3.Row
     return conn
 
