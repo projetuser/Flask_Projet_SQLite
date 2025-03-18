@@ -38,9 +38,9 @@ def dashboard():
 @app.route('/livres')
 def livres():
     conn = get_db_connection()
-    livres = conn.execute('SELECT * FROM livres').fetchall()
+    livres = conn.execute('SELECT * FROM livres').fetchall()  # Récupère tous les livres
     conn.close()
-    return render_template('livres.html', livres=livres)
+    return render_template('read_data.html', livres=livres)
 
 # Route pour ajouter un livre (administrateur)
 @app.route('/ajouter_livre', methods=['GET', 'POST'])
