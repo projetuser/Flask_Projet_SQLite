@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gérer les utilisateurs</title>
+</head>
+<body>
+    <h1>Gérer les utilisateurs</h1>
+    <form method="POST">
+        <label for="username">Nom d'utilisateur:</label><br>
+        <input type="text" id="username" name="username" required><br><br>
+        <label for="password">Mot de passe:</label><br>
+        <input type="password" id="password" name="password" required><br><br>
+        <label for="role">Rôle:</label><br>
+        <select id="role" name="role" required>
+            <option value="admin">Administrateur</option>
+            <option value="user">Utilisateur</option>
+        </select><br><br>
+        <input type="submit" value="Ajouter un utilisateur">
+    </form>
+    <a href="{{ url_for('home') }}">Retour à l'accueil</a>
+</body>
+</html>
