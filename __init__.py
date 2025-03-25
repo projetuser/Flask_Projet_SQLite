@@ -30,6 +30,9 @@ def index():
             session['username'] = user['username']
             session['role'] = user['role']
 
+            # Log pour vérifier les informations stockées dans la session
+            print(f"Utilisateur {username} connecté avec rôle {session['role']}")
+
             # Redirection en fonction du rôle
             if user['role'] == 'admin':
                 return redirect(url_for('admin_dashboard'))
@@ -46,6 +49,7 @@ def index():
 def admin_dashboard():
     # Vérifier si l'utilisateur est connecté et est un admin
     if 'username' not in session or session['role'] != 'admin':
+        print("Tentative d'accès à /admin_dashboard sans être admin, redirection vers index")
         return redirect(url_for('index'))  # Si ce n'est pas un admin, rediriger vers la page d'accueil
     return render_template('admin_dashboard.html', username=session['username'])
 
@@ -54,6 +58,7 @@ def admin_dashboard():
 def user_dashboard():
     # Vérifier si l'utilisateur est connecté et est un utilisateur
     if 'username' not in session or session['role'] != 'user':
+        print("Tentative d'accès à /user_dashboard sans être utilisateur, redirection vers index")
         return redirect(url_for('index'))  # Si ce n'est pas un utilisateur, rediriger vers la page d'accueil
     return render_template('user_dashboard.html', username=session['username'])
 
@@ -70,6 +75,9 @@ def register():
         conn.execute('INSERT INTO utilisateurs (username, password, role) VALUES (?, ?, ?)', (username, password, role))
         conn.commit()
         conn.close()
+
+        # Log pour vérifier que l'utilisateur est ajouté
+        print(f"Nouvel utilisateur ajouté : {username}")
 
         # Rediriger vers la page de connexion après inscription
         return redirect(url_for('index'))  # Rediriger vers la page d'accueil après inscription
