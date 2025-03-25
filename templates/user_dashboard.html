@@ -3,18 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tableau de bord utilisateur</title>
+    <title>Tableau de bord Utilisateur</title>
 </head>
 <body>
-    <h1>Tableau de bord Utilisateur</h1>
-    <p>Bienvenue, {{ username }} !</p>
-
-    <h2>Gestion des livres</h2>
-    <ul>
-        <li><a href="{{ url_for('list_books') }}">Voir les livres</a></li>
-        <li><a href="{{ url_for('borrow_book') }}">Emprunter un livre</a></li>
-    </ul>
-
+    <h2>Bienvenue {{ username }} - Tableau de bord Utilisateur</h2>
     <a href="{{ url_for('logout') }}">Se déconnecter</a>
 </body>
 </html>
