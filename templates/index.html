@@ -3,23 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Page d'accueil</title>
+    <title>Connexion</title>
 </head>
 <body>
-    <h1>Bienvenue sur le système de gestion de la bibliothèque</h1>
-
-    <form method="POST" action="/login">
+    <h2>Connexion</h2>
+    <form action="/" method="POST">
         <label for="username">Nom d'utilisateur :</label>
-        <input type="text" id="username" name="username" required><br>
-
+        <input type="text" id="username" name="username" required><br><br>
         <label for="password">Mot de passe :</label>
-        <input type="password" id="password" name="password" required><br>
-
-        <button type="submit">Se connecter</button>
+        <input type="password" id="password" name="password" required><br><br>
+        <input type="submit" value="Se connecter">
     </form>
-
+    
     {% if error %}
-        <p style="color: red;">{{ error }}</p>
+    <p style="color: red;">{{ error }}</p>
     {% endif %}
+
+    <p>Pas encore inscrit ? <a href="{{ url_for('register') }}">Inscrivez-vous ici</a></p>
 </body>
 </html>
