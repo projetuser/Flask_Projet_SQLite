@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emprunter un livre</title>
+</head>
+<body>
+    <h1>Emprunter un livre</h1>
+    <form method="POST">
+        <label for="livre_id">Choisir un livre:</label>
+        <select id="livre_id" name="livre_id" required>
+            {% for livre in livres %}
+                <option value="{{ livre['id'] }}">{{ livre['titre'] }} - {{ livre['auteur'] }}</option>
+            {% endfor %}
+        </select><br><br>
+        <input type="submit" value="Emprunter">
+    </form>
+    <a href="{{ url_for('home') }}">Retour à l'accueil</a>
+</body>
+</html>
