@@ -6,18 +6,24 @@
     <title>Bibliothèque - Connexion</title>
 </head>
 <body>
-    <h1>Bienvenue dans la bibliothèque</h1>
+    <h1>Connexion à la bibliothèque</h1>
 
-    <h2>Se connecter</h2>
-    <form method="POST" action="{{ url_for('login') }}">
-        <label for="username">Nom d'utilisateur:</label><br>
+    <!-- Affichage d'un message d'erreur si les informations sont incorrectes -->
+    {% if error %}
+        <p style="color: red;">{{ error }}</p>
+    {% endif %}
+
+    <!-- Formulaire de connexion -->
+    <form method="POST">
+        <label for="username">Nom d'utilisateur</label>
         <input type="text" id="username" name="username" required><br><br>
-        <label for="password">Mot de passe:</label><br>
+        
+        <label for="password">Mot de passe</label>
         <input type="password" id="password" name="password" required><br><br>
-        <input type="submit" value="Se connecter">
+        
+        <button type="submit">Se connecter</button>
     </form>
 
-    <a href="{{ url_for('register') }}">S'inscrire</a>
-
+    <p>Pas encore de compte ? <a href="{{ url_for('register') }}">Inscrivez-vous ici</a></p>
 </body>
 </html>
