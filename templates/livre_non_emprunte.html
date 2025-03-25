@@ -1,20 +1,11 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Erreur</title>
+    <title>Erreur de retour</title>
 </head>
 <body>
-    <h1>
-        {% if role == 'admin' %}
-            Ce livre n'a pas été emprunté par un utilisateur. Impossible de le désemprunter.
-        {% elif role == 'user' %}
-            Vous n'avez pas emprunté ce livre et il ne peut donc pas être retourné.
-        {% else %}
-            Erreur inconnue.
-        {% endif %}
-    </h1>
-    <a href="{{ url_for('livres') }}">Retour à la liste des livres</a>
+    <h1>Impossible de retourner ce livre</h1>
+    <p>Vous ne pouvez pas retourner ce livre car vous ne l'avez pas emprunté.</p>
+    <a href="{{ url_for('livres') }}">Retour</a>
 </body>
 </html>
