@@ -2,11 +2,19 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Tableau de bord - Utilisateur</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tableau de bord utilisateur</title>
 </head>
 <body>
-    <h1>Bienvenue, {{ user['username'] }} (Utilisateur)</h1>
-    <p><a href="{{ url_for('borrow_book', book_id=1) }}">Emprunter 'Orgueil et Préjugés'</a></p>
+    <h1>Tableau de bord Utilisateur</h1>
+    <p>Bienvenue, {{ username }} !</p>
+
+    <h2>Gestion des livres</h2>
+    <ul>
+        <li><a href="{{ url_for('list_books') }}">Voir les livres</a></li>
+        <li><a href="{{ url_for('borrow_book') }}">Emprunter un livre</a></li>
+    </ul>
+
     <a href="{{ url_for('logout') }}">Se déconnecter</a>
 </body>
 </html>
