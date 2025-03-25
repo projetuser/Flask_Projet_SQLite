@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ajouter un livre</title>
+</head>
+<body>
+    <h1>Ajouter un livre</h1>
+    <form method="POST">
+        <label for="titre">Titre:</label><br>
+        <input type="text" id="titre" name="titre" required><br><br>
+        <label for="auteur">Auteur:</label><br>
+        <input type="text" id="auteur" name="auteur" required><br><br>
+        <input type="submit" value="Ajouter">
+    </form>
+    <a href="{{ url_for('home') }}">Retour à l'accueil</a>
+</body>
+</html>
