@@ -1,157 +1,99 @@
-from flask import Flask, render_template, request, redirect, url_for, session
 import sqlite3
+from flask import Flask, render_template, request, redirect, url_for
+from werkzeug.security import generate_password_hash
 
-# Initialisation de l'application Flask
 app = Flask(__name__)
-app.secret_key = 'votre_cle_secrete'
-app.config['DEBUG'] = True  # Mode debug activé
-app.config['PROPAGATE_EXCEPTIONS'] = True  # Afficher les erreurs
 
-
-# Fonction pour se connecter à la base de données
+# Connexion à la base de données
 def get_db_connection():
     conn = sqlite3.connect('bibliotheque.db')
     conn.row_factory = sqlite3.Row
     return conn
 
+# Créer la base de données et exécuter le schéma
+def create_db():
+    connection = sqlite3.connect('bibliotheque.db')
+    with open('schema1.sql') as f:
+        connection.executescript(f.read())
+    connection.commit()
+    connection.close()
 
-# Page d'accueil -> redirection vers l'authentification
+# Initialiser la base de données avec des utilisateurs et des livres par défaut
+def init_db():
+    connection = sqlite3.connect('bibliotheque.db')
+    cur = connection.cursor()
+
+    # Ajouter des utilisateurs
+    cur.execute("INSERT INTO utilisateurs (username, password, role) VALUES (?, ?, ?)", ('admin', generate_password_hash('adminpass'), 'admin'))
+    cur.execute("INSERT INTO utilisateurs (username, password, role) VALUES (?, ?, ?)", ('user1', generate_password_hash('userpass'), 'user'))
+    cur.execute("INSERT INTO utilisateurs (username, password, role) VALUES (?, ?, ?)", ('user2', generate_password_hash('userpass2'), 'user'))
+
+    # Ajouter des livres
+    cur.execute("INSERT INTO livres (titre, auteur, disponible) VALUES (?, ?, ?)", ('Orgueil et Préjugés', 'Jane Austen', 1))
+    cur.execute("INSERT INTO livres (titre, auteur, disponible) VALUES (?, ?, ?)", ('Les Hauts de Hurle-Vent', 'Emily Brontë', 1))
+    cur.execute("INSERT INTO livres (titre, auteur, disponible) VALUES (?, ?, ?)", ('1984', 'George Orwell', 1))
+    cur.execute("INSERT INTO livres (titre, auteur, disponible) VALUES (?, ?, ?)", ("L'Étranger", 'Albert Camus', 1))
+    cur.execute("INSERT INTO livres (titre, auteur, disponible) VALUES (?, ?, ?)", ("L'Odyssée", 'Homère', 1))
+    cur.execute("INSERT INTO livres (titre, auteur, disponible) VALUES (?, ?, ?)", ("Le Petit Prince", 'Antoine de Saint-Exupéry', 1))
+    cur.execute("INSERT INTO livres (titre, auteur, disponible) VALUES (?, ?, ?)", ("Harry Potter à l'école des sorciers", 'J.K. Rowling', 1))
+    cur.execute("INSERT INTO livres (titre, auteur, disponible) VALUES (?, ?, ?)", ("Les Misérables", 'Victor Hugo', 1))
+
+    connection.commit()
+    connection.close()
+    print("Base de données initialisée avec succès!")
+
 @app.route('/')
-def index():
-    return redirect(url_for('authentification'))
+def home():
+    return render_template('index.html')
 
-
-# Authentification des utilisateurs
-@app.route('/authentification', methods=['GET', 'POST'])
-def authentification():
-    if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-        conn = get_db_connection()
-        user = conn.execute('SELECT * FROM utilisateurs WHERE username = ? AND password = ?', 
-                            (username, password)).fetchone()
-        conn.close()
-        if user:
-            session['user_id'] = user['id']
-            session['role'] = user['role']
-            return redirect(url_for('dashboard'))
-        else:
-            return render_template('formulaire_authentification.html', error=True)
-    return render_template('formulaire_authentification.html')
-
-
-# Tableau de bord
-@app.route('/dashboard')
-def dashboard():
-    if 'user_id' not in session:
-        return redirect(url_for('authentification'))
-    return render_template('dashboard.html', role=session['role'])
-
-
-# Affichage des livres
-@app.route('/livres')
-def livres():
+@app.route('/livres', methods=['GET'])
+def list_books():
     conn = get_db_connection()
-    livres = conn.execute('SELECT * FROM livres').fetchall()
-    emprunts = conn.execute('SELECT * FROM emprunts WHERE user_id = ?', (session.get('user_id', None),)).fetchall()
+    livres = conn.execute('SELECT * FROM livres WHERE disponible = 1').fetchall()
     conn.close()
-    return render_template('livres.html', livres=livres, emprunts=emprunts)
+    return render_template('list_books.html', livres=livres)
 
-
-# Ajout d'un livre (réservé à l'admin)
-@app.route('/ajouter_livre', methods=['GET', 'POST'])
-def ajouter_livre():
-    if 'role' not in session or session['role'] != 'admin':
-        return redirect(url_for('dashboard'))
+@app.route('/ajouter-livre', methods=['GET', 'POST'])
+def add_book():
     if request.method == 'POST':
         titre = request.form['titre']
         auteur = request.form['auteur']
         conn = get_db_connection()
-        conn.execute('INSERT INTO livres (titre, auteur, disponible) VALUES (?, ?, 1)', (titre, auteur))
+        conn.execute('INSERT INTO livres (titre, auteur, disponible) VALUES (?, ?, ?)', (titre, auteur, 1))
         conn.commit()
         conn.close()
-        return redirect(url_for('livres'))
-    return render_template('ajouter_livre.html')
+        return redirect(url_for('list_books'))
+    return render_template('add_book.html')
 
-
-# Suppression d'un livre (réservé à l'admin)
-@app.route('/supprimer_livre/<int:id>')
-def supprimer_livre(id):
-    if 'role' not in session or session['role'] != 'admin':
-        return redirect(url_for('dashboard'))
+@app.route('/emprunter-livre', methods=['GET', 'POST'])
+def borrow_book():
+    if request.method == 'POST':
+        livre_id = request.form['livre_id']
+        user_id = 1  # A remplacer avec la gestion de l'utilisateur connecté
+        conn = get_db_connection()
+        conn.execute('INSERT INTO emprunts (user_id, livre_id) VALUES (?, ?)', (user_id, livre_id))
+        conn.execute('UPDATE livres SET disponible = 0 WHERE id = ?', (livre_id,))
+        conn.commit()
+        conn.close()
+        return redirect(url_for('list_books'))
     conn = get_db_connection()
-    conn.execute('DELETE FROM livres WHERE id = ?', (id,))
-    conn.commit()
+    livres = conn.execute('SELECT * FROM livres WHERE disponible = 1').fetchall()
     conn.close()
-    return redirect(url_for('livres'))
+    return render_template('borrow_book.html', livres=livres)
 
-
-# Emprunter un livre
-@app.route('/emprunter_livre/<int:id>')
-def emprunter_livre(id):
-    if 'user_id' not in session:
-        return redirect(url_for('authentification'))
-    
-    conn = get_db_connection()
-    livre = conn.execute('SELECT * FROM livres WHERE id = ?', (id,)).fetchone()
-
-    if livre and livre['disponible'] > 0:
-        conn.execute('INSERT INTO emprunts (user_id, livre_id) VALUES (?, ?)', (session['user_id'], id))
-        conn.execute('UPDATE livres SET disponible = disponible - 1 WHERE id = ?', (id,))
+@app.route('/gestion-utilisateurs', methods=['GET', 'POST'])
+def manage_users():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = generate_password_hash(request.form['password'])
+        role = request.form['role']
+        conn = get_db_connection()
+        conn.execute('INSERT INTO utilisateurs (username, password, role) VALUES (?, ?, ?)', (username, password, role))
         conn.commit()
         conn.close()
-        return redirect(url_for('livres'))
-    else:
-        conn.close()
-        return render_template('livre_indisponible.html')
+    return render_template('manage_users.html')
 
-
-# Retourner un livre (par un utilisateur ou un admin)
-@app.route('/retourner_livre/<int:id>')
-def retourner_livre(id):
-    if 'user_id' not in session:
-        return redirect(url_for('authentification'))
-    
-    conn = get_db_connection()
-
-    if 'role' in session and session['role'] == 'admin':
-        conn.execute('DELETE FROM emprunts WHERE livre_id = ?', (id,))
-        conn.execute('UPDATE livres SET disponible = disponible + 1 WHERE id = ?', (id,))
-        conn.commit()
-        conn.close()
-        return redirect(url_for('livres'))
-
-    emprunt = conn.execute('SELECT * FROM emprunts WHERE user_id = ? AND livre_id = ?', 
-                           (session['user_id'], id)).fetchone()
-    if emprunt:
-        conn.execute('DELETE FROM emprunts WHERE user_id = ? AND livre_id = ?', (session['user_id'], id))
-        conn.execute('UPDATE livres SET disponible = disponible + 1 WHERE id = ?', (id,))
-        conn.commit()
-        conn.close()
-        return redirect(url_for('livres'))
-    else:
-        conn.close()
-        return render_template('livre_non_emprunte.html')
-
-
-# Gestion des utilisateurs (admin uniquement)
-@app.route('/utilisateurs')
-def utilisateurs():
-    if 'role' not in session or session['role'] != 'admin':
-        return redirect(url_for('dashboard'))
-    conn = get_db_connection()
-    users = conn.execute('SELECT * FROM utilisateurs').fetchall()
-    conn.close()
-    return render_template('utilisateurs.html', utilisateurs=users)
-
-
-# Déconnexion
-@app.route('/deconnexion')
-def deconnexion():
-    session.clear()
-    return redirect(url_for('index'))
-
-
-# Lancer l'application
 if __name__ == '__main__':
+    create_db()
+    init_db()
     app.run(debug=True)
