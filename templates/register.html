@@ -2,18 +2,25 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inscription</title>
+    <title>Inscription - Bibliothèque</title>
 </head>
 <body>
-    <h1>Inscription</h1>
-    <form method="POST" action="{{ url_for('register') }}">
-        <label for="username">Nom d'utilisateur:</label><br>
-        <input type="text" id="username" name="username" required><br><br>
-        <label for="password">Mot de passe:</label><br>
-        <input type="password" id="password" name="password" required><br><br>
-        <input type="submit" value="S'inscrire">
+    <h1>Inscription à la bibliothèque</h1>
+
+    {% if error %}
+    <div class="error">{{ error }}</div>
+    {% endif %}
+    
+    <form method="POST">
+        <label for="username">Nom d'utilisateur :</label>
+        <input type="text" id="username" name="username" required>
+
+        <label for="password">Mot de passe :</label>
+        <input type="password" id="password" name="password" required>
+
+        <button type="submit">S'inscrire</button>
     </form>
-    <a href="{{ url_for('home') }}">Retour à la page de connexion</a>
+
+    <p>Déjà inscrit ? <a href="{{ url_for('home') }}">Connecte-toi ici</a></p>
 </body>
 </html>
