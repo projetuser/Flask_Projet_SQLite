@@ -3,24 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tableau de bord administrateur</title>
+    <title>Tableau de bord Admin</title>
 </head>
 <body>
-    <h1>Tableau de bord Administrateur</h1>
-    <p>Bienvenue, {{ username }} !</p>
-
-    <h2>Gestion des livres</h2>
-    <ul>
-        <li><a href="{{ url_for('add_book') }}">Ajouter un livre</a></li>
-        <li><a href="{{ url_for('list_books') }}">Liste des livres</a></li>
-        <li><a href="{{ url_for('borrow_book') }}">Emprunter un livre</a></li>
-    </ul>
-
-    <h2>Gestion des utilisateurs</h2>
-    <ul>
-        <li><a href="{{ url_for('manage_users') }}">Gérer les utilisateurs</a></li>
-    </ul>
-
+    <h2>Bienvenue {{ username }} - Tableau de bord Administrateur</h2>
     <a href="{{ url_for('logout') }}">Se déconnecter</a>
 </body>
 </html>
